@@ -1,0 +1,19 @@
+- name: Install packages
+  become: yes
+  apt:
+    state: present
+    name:
+      - bat
+      - build-essential
+      - git
+      - ripgrep
+      - zsh
+      - zsh-autosuggestions
+      - zsh-syntax-highlighting
+
+- name: Fix git remote for playbook repo
+  community.general.git_config:
+    repo: "{{ playbook_dir }}"
+    scope: local
+    name: 'remote.origin.url'
+    value: 'git@github.com:drewreeve/linux-playbook.git'
