@@ -1,0 +1,43 @@
+# Needed for setting dconf values
+- name: Install additional packages for ansible
+  apt:
+    name: "python3-psutil"
+    state: present
+
+- name: Enable night light
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/color/night-light-enabled
+    value: 'true'
+    state: present
+
+- name: Set night light temperature
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/color/night-light-temperature
+    value: 'uint32 3200'
+    state: present
+
+- name: Disable night light automatic schedule
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/color/night-light-schedule-automatic
+    value: 'false'
+
+- name: Set night light start time
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/color/night-light-schedule-from
+    value: 'double 21.0'
+
+- name: Set night light end time
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/color/night-light-schedule-to
+    value: 'double 6.0'
+
+- name: Set keyboard options
+  community.general.dconf:
+    key: /org/gnome/desktop/input-sources/xkb-options
+    value: "['ctrl:nocaps']"
+    state: present
+
+- name: Set clock format
+  community.general.dconf:
+    key: "/org/gnome/desktop/interface/clock-format"
+    value: "'24h'"
