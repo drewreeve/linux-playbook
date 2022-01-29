@@ -20,16 +20,19 @@
   community.general.dconf:
     key: /org/gnome/settings-daemon/plugins/color/night-light-schedule-automatic
     value: 'false'
+    state: present
 
 - name: Set night light start time
   community.general.dconf:
     key: /org/gnome/settings-daemon/plugins/color/night-light-schedule-from
-    value: 'double 21.0'
+    value: '21.0'
+    state: present
 
 - name: Set night light end time
   community.general.dconf:
     key: /org/gnome/settings-daemon/plugins/color/night-light-schedule-to
-    value: 'double 6.0'
+    value: '6.0'
+    state: present
 
 - name: Set keyboard options
   community.general.dconf:
@@ -41,3 +44,4 @@
   community.general.dconf:
     key: "/org/gnome/desktop/interface/clock-format"
     value: "'24h'"
+    state: present
