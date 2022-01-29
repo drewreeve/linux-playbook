@@ -11,6 +11,23 @@
       - zsh-autosuggestions
       - zsh-syntax-highlighting
 
+- name: Create .local/bin
+  ansible.builtin.file:
+    path: "{{ lookup('env', 'HOME') }}/.local/bin"
+    state: directory
+
+- name: Check if bat was installed as batcat
+  ansible.builtin.stat:
+    path: /usr/bin/batcat
+  register: batcat
+
+- name: Symlink batcat to bat
+  ansible.builtin.file:
+    src: /usr/bin/batcat
+    dest: "{{ lookup('env', 'HOME') }}/.local/bin/bat"
+    state: link
+  when: batcat.stat.exists
+
 - name: Fix git remote for playbook repo
   community.general.git_config:
     repo: "{{ playbook_dir }}"
