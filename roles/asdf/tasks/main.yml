@@ -1,0 +1,10 @@
+- name: Install asdf
+  ansible.builtin.git:
+    repo: 'https://github.com/asdf-vim/asdf.git'
+    dest: "{{ lookup('env', 'HOME') }}/.asdf"
+    update: no
+
+- name: Update to latest stable version
+  ansible.builtin.command: "asdf update"
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ lookup('env', 'HOME') }}/.asdf/bin"

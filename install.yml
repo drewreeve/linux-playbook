@@ -9,4 +9,6 @@
         upgrade: dist
   roles:
     - core
+    - role: asdf
+      tags: asdf
     - gnome
