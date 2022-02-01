@@ -1,0 +1,19 @@
+- name: Clone sumneko lua-language-server
+  git:
+    repo: https://github.com/sumneko/lua-language-server.git
+    dest: "{{ lookup('env', 'HOME') }}/build/lua-language-server"
+    recursive: yes
+    update: yes
+  register: luaserver_clone
+
+- name: Build lua-language-server (step 1)
+  command: ./compile/install.sh
+  args:
+    chdir: "{{ lookup('env', 'HOME') }}/build/lua-language-server/3rd/luamake"
+  when: luaserver_clone.changed
+
+- name: Build lua-language-server (step 2)
+  command: ./3rd/luamake/luamake rebuild
+  args:
+    chdir: "{{ lookup('env', 'HOME') }}/build/lua-language-server"
+  when: luaserver_clone.changed

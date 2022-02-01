@@ -12,3 +12,6 @@
     - role: asdf
       tags: asdf
     - gnome
+    - neovim
+    - role: lsp
+      tags: lsp

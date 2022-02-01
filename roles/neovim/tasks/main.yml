@@ -1,0 +1,49 @@
+- name: Install prerequisites for building neovim
+  become: yes
+  apt:
+    pkg:
+      - ninja-build
+      - gettext
+      - libtool
+      - libtool-bin
+      - autoconf
+      - automake
+      - cmake
+      - g++
+      - pkg-config
+      - unzip
+      - curl
+      - doxygen 
+  tags: neovim
+
+- name: Clone neovim
+  git:
+    repo: https://github.com/neovim/neovim.git
+    dest: "{{ lookup('env', 'HOME') }}/build/neovim"
+    force: yes
+    update: yes
+  register: neovim_clone
+  tags: neovim
+
+- name: Clean build directory
+  command: make distclean
+  args:
+    chdir: "{{ lookup('env', 'HOME') }}/build/neovim"
+  register: neovim_clean_build
+  tags: never,neovim_clean
+
+- name: Build neovim
+  command: make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$HOME/.local" CMAKE_BUILD_TYPE=RelWithDebInfo
+  args:
+    chdir: "{{ lookup('env', 'HOME') }}/build/neovim"
+  when: neovim_clone is changed or neovim_clean_build is defined
+  register: neovim_built
+  tags: neovim
+
+- name: Install neovim
+  command: make install
+  args:
+    chdir: "{{ lookup('env', 'HOME') }}/build/neovim"
+  when: neovim_built is changed
+  tags: neovim
+
