@@ -1,0 +1,40 @@
+- name: Fetch JetbrainMono latest release info
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/JetBrains/JetBrainsMono/releases/latest
+    return_content: yes
+  register: jetbrain_releases
+  tags: fonts
+
+- name: Create temp folder
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: jetbrain
+  register: jetbrain_temp_dir
+  tags: fonts
+
+- name: Download JetbrainsMono
+  ansible.builtin.get_url:
+    url: "{{ jetbrain_releases.json | json_query('assets[0].browser_download_url') }}"
+    dest: "{{ jetbrain_temp_dir.path }}/"
+  register: jetbrains_zip
+  tags: fonts
+
+- name: Unzip JetBrainsMono
+  ansible.builtin.unarchive:
+    src: "{{ jetbrains_zip.dest }}"
+    dest: "{{ jetbrain_temp_dir.path }}"
+  tags: fonts
+
+- name: Copy fonts
+  ansible.posix.synchronize:
+    src: "{{ jetbrain_temp_dir.path }}/fonts/ttf/"
+    dest: "{{ lookup('env', 'HOME') }}/.local/share/fonts/JetbrainsMono"
+    delete: yes
+  notify: update font cache
+  tags: fonts
+
+- name: Cleanup
+  ansible.builtin.file:
+    path: "{{ jetbrain_temp_dir.path }}"
+    state: absent
+  tags: fonts
