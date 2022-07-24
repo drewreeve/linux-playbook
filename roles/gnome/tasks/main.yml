@@ -45,3 +45,34 @@
     key: "/org/gnome/desktop/interface/clock-format"
     value: "'24h'"
     state: present
+
+# Terminal config
+- name: Read existing terminal profiles
+  community.general.dconf:
+    key: "/org/gnome/terminal/legacy/profiles:/list"
+    state: read
+  register: existing_terminal_profiles
+
+
+
+- name: Generate profile list
+  set_fact:
+    terminal_profiles: |-
+      {{ existing_terminal_profiles.value | regex_findall("'(.*?)'") }}
+
+- name: Append new profile to list
+  set_fact:
+    terminal_profiles: "{{ terminal_profiles|default([]) + terminal.profile_id  }}"
+
+- name: Write profile list
+  community.general.dconf:
+    key: "/org/gnome/terminal/legacy/profiles:/list"
+    value: "{{ terminal_profiles|unique|string }}"
+    state: present
+
+- name: Write profile settings
+  community.general.dconf:
+    key: "/org/gnome/terminal/legacy/profiles:/:{{ terminal.profile_id | first }}/{{ item.key|string }}"
+    value: "{{ item.value }}"
+    state: present
+  loop: "{{ terminal.profile_settings | dict2items }}"

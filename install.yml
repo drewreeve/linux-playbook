@@ -12,7 +12,8 @@
     - dotfiles
     - role: asdf
       tags: asdf
-    - gnome
+    - role: gnome
+      tags: gnome
     - neovim
     - role: lsp
       tags: lsp
