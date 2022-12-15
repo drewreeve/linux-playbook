@@ -25,6 +25,11 @@
     dest: "{{ jetbrain_temp_dir.path }}"
   tags: fonts
 
+- name: Create destination folder
+  ansible.builtin.file:
+    path: "{{ lookup('env', 'HOME') }}/.local/share/fonts/JetBrainsMono"
+    state: directory
+
 - name: Copy fonts
   ansible.posix.synchronize:
     src: "{{ jetbrain_temp_dir.path }}/fonts/ttf/"
